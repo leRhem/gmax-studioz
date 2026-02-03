@@ -5,6 +5,46 @@ import { PAGE_PERMISSIONS } from "@/lib/permissions"
 import type { StaffRole } from "@/lib/generated/prisma"
 
 /**
+ * Get the subdomain from a hostname
+ * @example getSubdomain("dash.gmaxstudioz.com") => "dash"
+ * @example getSubdomain("www.gmaxstudioz.com") => "www"
+ * @example getSubdomain("gmaxstudioz.com") => null
+ * @example getSubdomain("localhost:3000") => null
+ */
+function getSubdomain(hostname: string): string | null {
+  // Remove port if present
+  const host = hostname.split(":")[0]
+  
+  // For localhost development, check for subdomain simulation via query param or header
+  if (host === "localhost" || host === "127.0.0.1") {
+    return null // Handle in dev with query params if needed
+  }
+  
+  const parts = host.split(".")
+  
+  // Check for subdomain (e.g., dash.gmaxstudioz.com has 3 parts)
+  if (parts.length >= 3) {
+    const subdomain = parts[0]
+    // Don't treat www as a special subdomain for routing
+    if (subdomain === "www") {
+      return null
+    }
+    return subdomain
+  }
+  
+  return null
+}
+
+/**
+ * Subdomain to path prefix mapping
+ */
+const SUBDOMAIN_PATHS: Record<string, string> = {
+  dash: "/dashboard",
+  api: "/api",
+  auth: "/login", // auth subdomain redirects to login
+}
+
+/**
  * Check if the user has access to the given path based on their role
  */
 function hasAccess(userRole: StaffRole, pathname: string): boolean {
@@ -23,7 +63,59 @@ function hasAccess(userRole: StaffRole, pathname: string): boolean {
 }
 
 export default auth((req) => {
-  const { pathname } = req.nextUrl
+  const hostname = req.headers.get("host") || ""
+  const subdomain = getSubdomain(hostname)
+  let { pathname } = req.nextUrl
+  
+  // Handle subdomain-based routing
+  if (subdomain && SUBDOMAIN_PATHS[subdomain]) {
+    const targetPrefix = SUBDOMAIN_PATHS[subdomain]
+    
+    // For 'dash' subdomain: rewrite to /dashboard routes
+    if (subdomain === "dash") {
+      // If accessing root of dash.gmaxstudioz.com, go to /dashboard
+      if (pathname === "/" || pathname === "") {
+        const url = req.nextUrl.clone()
+        url.pathname = "/dashboard"
+        return NextResponse.rewrite(url)
+      }
+      // If the path doesn't already start with /dashboard, prepend it
+      if (!pathname.startsWith("/dashboard")) {
+        const url = req.nextUrl.clone()
+        url.pathname = `/dashboard${pathname}`
+        return NextResponse.rewrite(url)
+      }
+    }
+    
+    // For 'api' subdomain: rewrite to /api routes
+    if (subdomain === "api") {
+      // If accessing root of api.gmaxstudioz.com, return API info
+      if (pathname === "/" || pathname === "") {
+        return NextResponse.json({
+          name: "GMax Studioz API",
+          version: "1.0.0",
+          status: "healthy",
+        })
+      }
+      // If the path doesn't already start with /api, prepend it
+      if (!pathname.startsWith("/api")) {
+        const url = req.nextUrl.clone()
+        url.pathname = `/api${pathname}`
+        return NextResponse.rewrite(url)
+      }
+    }
+    
+    // For 'auth' subdomain: redirect to login
+    if (subdomain === "auth") {
+      if (pathname === "/" || pathname === "") {
+        const url = req.nextUrl.clone()
+        url.pathname = "/login"
+        return NextResponse.rewrite(url)
+      }
+      // Allow other auth-related paths like /login, /register, etc.
+    }
+  }
+  
   const isLoggedIn = !!req.auth
 
   // Public routes that don't require authentication
@@ -55,7 +147,7 @@ export default auth((req) => {
       )
     }
     
-    // For page routes, redirect to login
+    // For page routes, redirect to login (on auth subdomain if available)
     const loginUrl = new URL("/login", req.url)
     loginUrl.searchParams.set("callbackUrl", pathname)
     return NextResponse.redirect(loginUrl)
@@ -63,6 +155,7 @@ export default auth((req) => {
 
   // If logged in and trying to access login page
   if (isLoggedIn && pathname === "/login") {
+    // Redirect to dashboard (could use dash subdomain in production)
     return NextResponse.redirect(new URL("/dashboard", req.url))
   }
 

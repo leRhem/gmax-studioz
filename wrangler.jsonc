@@ -7,6 +7,14 @@
     "nodejs_compat"
   ],
 
+  "routes": [
+    { "pattern": "www.gmaxstudioz.com/*", "zone_name": "gmaxstudioz.com" },
+    { "pattern": "gmaxstudioz.com/*", "zone_name": "gmaxstudioz.com" },
+    { "pattern": "dash.gmaxstudioz.com/*", "zone_name": "gmaxstudioz.com" },
+    { "pattern": "api.gmaxstudioz.com/*", "zone_name": "gmaxstudioz.com" },
+    { "pattern": "auth.gmaxstudioz.com/*", "zone_name": "gmaxstudioz.com" }
+  ],
+
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
