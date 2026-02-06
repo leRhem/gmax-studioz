@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { PAGE_PERMISSIONS } from "@/lib/permissions"
-import { StaffRole } from "@/lib/generated/prisma"
+import { StaffRole } from "@/lib/generated/prisma/client"
 
 interface RouteParams {
     params: Promise<{ id: string }>

@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { StaffRole, NotificationChannel } from "@/lib/generated/prisma"
+import { StaffRole, NotificationChannel } from "@/lib/generated/prisma/client"
 import { sendNotification } from "@/lib/notifications"
 
 // POST: Create staff invitation

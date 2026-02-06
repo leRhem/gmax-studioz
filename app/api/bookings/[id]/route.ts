@@ -4,7 +4,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { sendNotification } from "@/lib/notifications"
-import { NotificationChannel } from "@/lib/generated/prisma"
+import { NotificationChannel } from "@/lib/generated/prisma/client"
 
 const updateBookingSchema = z.object({
   clientId: z.string().cuid().optional(),

@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { StaffRole } from "@/lib/generated/prisma"
+import { StaffRole } from "@/lib/generated/prisma/client"
 
 interface RouteParams {
     params: Promise<{ id: string }>

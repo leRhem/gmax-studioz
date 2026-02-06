@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { StaffOverview } from "./staff-overview"
 import { startOfMonth, subMonths, format, subDays } from "date-fns"
 
-import { Prisma } from "@/lib/generated/prisma"
+import { Prisma } from "@/lib/generated/prisma/client"
 
 // Define the type with includes
 type RecentBookingRaw = Prisma.BookingGetPayload<{

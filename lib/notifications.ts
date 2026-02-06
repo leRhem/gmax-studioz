@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { NotificationType, NotificationChannel, NotificationStatus } from "@/lib/generated/prisma"
+import { NotificationType, NotificationChannel, NotificationStatus } from "@/lib/generated/prisma/client"
 
 interface SendNotificationParams {
   clientName: string

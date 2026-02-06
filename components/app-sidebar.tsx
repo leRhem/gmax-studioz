@@ -34,7 +34,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { getNavItemsForRole, type NavItem } from "@/lib/permissions"
-import type { StaffRole } from "@/lib/generated/prisma"
+import type { StaffRole } from "@/lib/generated/prisma/client"
 
 // Icon mapping for dynamic rendering
 const iconMap = {

@@ -2,7 +2,7 @@
 // Enhanced with Session-Based Booking Configuration
 // Run with: npx tsx prisma/seed.ts
 import 'dotenv/config'
-import { ClientType, StaffRole, ServiceType } from '@/lib/generated/prisma'
+import { ClientType, StaffRole, ServiceType } from '@/lib/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 

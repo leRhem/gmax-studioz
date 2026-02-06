@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendNotification } from "@/lib/notifications"
-import { NotificationChannel } from "@/lib/generated/prisma"
+import { NotificationChannel } from "@/lib/generated/prisma/client"
 
 export async function GET(request: NextRequest) {
   try {

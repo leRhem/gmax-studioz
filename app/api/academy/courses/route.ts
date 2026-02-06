@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { Prisma } from "@/lib/generated/prisma"
+import { Prisma } from "@/lib/generated/prisma/client"
 
 /**
  * GET: List all courses (filterable by studio, level)
