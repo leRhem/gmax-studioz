@@ -56,6 +56,12 @@
       }
     ]
   },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "5ed6019b7e794afba00bff4703e5d953"
+    }
+  ],
 
   "migrations": [
     {
