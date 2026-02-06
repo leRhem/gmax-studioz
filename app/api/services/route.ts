@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 
+
+
 // GET: List all services with session configuration
 export async function GET(request: NextRequest) {
   try {

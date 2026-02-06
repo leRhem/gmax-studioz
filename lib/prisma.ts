@@ -1,13 +1,16 @@
-import { PrismaClient } from './generated/prisma/client.js'
-import { withAccelerate } from '@prisma/extension-accelerate'
+import { PrismaClient } from "./generated/prisma/client"
+import { withAccelerate } from "@prisma/extension-accelerate"
 
-const url = process.env.DATABASE_URL
-if (!url) {
-  console.log('⚠️ DATABASE_URL is undefined. Using placeholder for build.')
+const prismaClientSingleton = () => {
+  return new PrismaClient({
+    accelerateUrl: process.env.DATABASE_URL,
+  }).$extends(withAccelerate())
 }
 
-const prisma = new PrismaClient({
-  accelerateUrl: url,
-}).$extends(withAccelerate())
+declare global {
+  var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>
+}
 
-export { prisma }
+export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+
+if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma

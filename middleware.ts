@@ -1,8 +1,11 @@
 // middleware.ts
 import { NextResponse } from "next/server"
-import { auth } from "@/auth"
+import NextAuth from "next-auth"
+import authConfig from "@/auth.config"
 import { PAGE_PERMISSIONS } from "@/lib/permissions"
-import type { StaffRole } from "@/lib/generated/prisma"
+import type { StaffRole } from "@/types/staff"
+
+const { auth } = NextAuth(authConfig)
 
 /**
  * Get the subdomain from a hostname
@@ -67,25 +70,29 @@ export default auth((req) => {
   const subdomain = getSubdomain(hostname)
   let { pathname } = req.nextUrl
   
-  // Track if we need to rewrite the URL at the end
-  let rewritePath: string | null = null
-  
-  // Handle subdomain-based routing by calculating the rewrite path
+  // Handle subdomain-based routing
   if (subdomain && SUBDOMAIN_PATHS[subdomain]) {
-    // For 'dash' subdomain: map to /dashboard routes
+    const targetPrefix = SUBDOMAIN_PATHS[subdomain]
+    
+    // For 'dash' subdomain: rewrite to /dashboard routes
     if (subdomain === "dash") {
+      // If accessing root of dash.gmaxstudioz.com, go to /dashboard
       if (pathname === "/" || pathname === "") {
-        rewritePath = "/dashboard"
-        pathname = "/dashboard" // Update pathname for auth checks
-      } else if (!pathname.startsWith("/dashboard")) {
-        rewritePath = `/dashboard${pathname}`
-        pathname = rewritePath // Update pathname for auth checks
+        const url = req.nextUrl.clone()
+        url.pathname = "/dashboard"
+        return NextResponse.rewrite(url)
+      }
+      // If the path doesn't already start with /dashboard, prepend it
+      if (!pathname.startsWith("/dashboard")) {
+        const url = req.nextUrl.clone()
+        url.pathname = `/dashboard${pathname}`
+        return NextResponse.rewrite(url)
       }
     }
     
-    // For 'api' subdomain: map to /api routes
+    // For 'api' subdomain: rewrite to /api routes
     if (subdomain === "api") {
-      // Root of api subdomain returns API info
+      // If accessing root of api.gmaxstudioz.com, return API info
       if (pathname === "/" || pathname === "") {
         return NextResponse.json({
           name: "GMax Studioz API",
@@ -93,18 +100,22 @@ export default auth((req) => {
           status: "healthy",
         })
       }
+      // If the path doesn't already start with /api, prepend it
       if (!pathname.startsWith("/api")) {
-        rewritePath = `/api${pathname}`
-        pathname = rewritePath // Update pathname for auth checks
+        const url = req.nextUrl.clone()
+        url.pathname = `/api${pathname}`
+        return NextResponse.rewrite(url)
       }
     }
     
-    // For 'auth' subdomain: map to /login
+    // For 'auth' subdomain: redirect to login
     if (subdomain === "auth") {
       if (pathname === "/" || pathname === "") {
-        rewritePath = "/login"
-        pathname = "/login" // Update pathname for auth checks
+        const url = req.nextUrl.clone()
+        url.pathname = "/login"
+        return NextResponse.rewrite(url)
       }
+      // Allow other auth-related paths like /login, /register, etc.
     }
   }
   
@@ -139,8 +150,7 @@ export default auth((req) => {
       )
     }
     
-    // For page routes, redirect to login
-    // Use the main domain for login to avoid subdomain issues with cookies
+    // For page routes, redirect to login (on auth subdomain if available)
     const loginUrl = new URL("/login", req.url)
     loginUrl.searchParams.set("callbackUrl", pathname)
     return NextResponse.redirect(loginUrl)
@@ -148,7 +158,7 @@ export default auth((req) => {
 
   // If logged in and trying to access login page
   if (isLoggedIn && pathname === "/login") {
-    // Redirect to dashboard
+    // Redirect to dashboard (could use dash subdomain in production)
     return NextResponse.redirect(new URL("/dashboard", req.url))
   }
 
@@ -163,13 +173,6 @@ export default auth((req) => {
       dashboardUrl.searchParams.set("attempted", pathname)
       return NextResponse.redirect(dashboardUrl)
     }
-  }
-
-  // If we have a rewrite path (from subdomain routing), apply it now
-  if (rewritePath) {
-    const url = req.nextUrl.clone()
-    url.pathname = rewritePath
-    return NextResponse.rewrite(url)
   }
 
   return NextResponse.next()
