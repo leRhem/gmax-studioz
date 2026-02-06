@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === "development") {
  
 const nextConfig: NextConfig = {
   /* config options here */
+  transpilePackages: ['pg'],
 };
  
 export default nextConfig;
