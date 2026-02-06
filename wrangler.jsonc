@@ -8,7 +8,7 @@
   ],
 
   "vars": {
-    "DATABASE_URL": "postgresql://postgres.qxbdsbobnyoqkzltcpke:kucGCanM4ceYfXQh3xrACqZZyE@aws-1-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
+    "DATABASE_URL": "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19pN3B2MkxteGYxeEVnQm5kN2lmUXoiLCJhcGlfa2V5IjoiMDFLRVZQUzU1TUJEWTlWMjM5NzEyR1lRQjYiLCJ0ZW5hbnRfaWQiOiI1MzE4ZTdlOTYxOTIyNzE2MjRjOTNlMjhhM2ZkY2M1ZTQ2YTUzODk5NWIwYzk5NWQ5NDQxMGRjZGI4ZDM0ODM4IiwiaW50ZXJuYWxfc2VjcmV0IjoiOTJlOTA5ODAtYjk3Ny00NDcwLTg1YjUtMDkzNWYwZGI1YzgzIn0.oppJer8SeXHcX_ZlgmBYFkwVFNfzRxSioyGlHIto03c",
     "NEXT_PUBLIC_SUPABASE_URL": "https://qxbdsbobnyoqkzltcpke.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4YmRzYm9ibnlvcWt6bHRjcGtlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MDQzNDgsImV4cCI6MjA4NTQ4MDM0OH0.uc_utdQ32OBh3QFWI1KYvv4tnOZE8lz1jMxLaCWwMrE",
     "AUTH_URL": "https://www.gmaxstudioz.com",
