@@ -1,8 +1,11 @@
 // middleware.ts
 import { NextResponse } from "next/server"
-import { auth } from "@/auth"
+import NextAuth from "next-auth"
+import authConfig from "@/auth.config"
 import { PAGE_PERMISSIONS } from "@/lib/permissions"
-import type { StaffRole } from "@/lib/generated/prisma"
+import type { StaffRole } from "@/types/staff"
+
+const { auth } = NextAuth(authConfig)
 
 /**
  * Get the subdomain from a hostname

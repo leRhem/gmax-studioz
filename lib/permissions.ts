@@ -1,4 +1,4 @@
-import { StaffRole } from "@/lib/generated/prisma"
+import { StaffRole } from "@/types/staff"
 
 // Define all dashboard routes and their allowed roles
 export const PAGE_PERMISSIONS: Record<string, StaffRole[]> = {

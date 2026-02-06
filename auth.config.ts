@@ -11,60 +11,7 @@ const loginSchema = z.object({
 })
 
 export default {
-  providers: [
-    Credentials({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        try {
-          // IMPORTANT: Dynamic imports to avoid Edge Runtime issues
-          const bcrypt = await import("bcryptjs")
-          const { prisma } = await import("@/lib/prisma")
-          
-          // Validate input
-          const { email, password } = loginSchema.parse(credentials)
-
-          // Find staff member by email
-          const staff = await prisma.staff.findUnique({
-            where: { email: email.toLowerCase() },
-            include: { studio: true },
-          })
-
-          // Check if staff exists and is active
-          if (!staff || !staff.isActive) {
-            return null
-          }
-
-          // Check if password is set (account accepted invitation)
-          if (!staff.password) {
-            throw new Error("Please accept your invitation first")
-          }
-
-          // Verify password
-          const isValid = await bcrypt.compare(password, staff.password)
-          if (!isValid) {
-            return null
-          }
-
-          // Return user object for session
-          return {
-            id: staff.id,
-            name: staff.name,
-            email: staff.email,
-            image: staff.image,
-            role: staff.role as StaffRole,
-            studioId: staff.studioId,
-          }
-        } catch (error) {
-          console.error("Auth error:", error)
-          return null
-        }
-      },
-    }),
-  ],
+  providers: [],
   pages: {
     signIn: "/login",
     error: "/login",
